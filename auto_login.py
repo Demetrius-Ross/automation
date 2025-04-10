@@ -27,7 +27,7 @@ def decrypt_credentials(pin: str) -> dict:
 def login_with_selenium(username, password):
     options = EdgeOptions()
     options.add_argument("--new-window")
-    options.add_argument(r"user-data-dir=C:\Users\p00802830\AppData\Local\Microsoft\Edge\User Data\AutomationProfile")
+    #options.add_argument(r"user-data-dir=C:\Users\p00802830\AppData\Local\Microsoft\Edge\User Data\AutomationProfile")
     service = EdgeService(EdgeChromiumDriverManager().install())
     driver = webdriver.Edge(service=service, options=options)
     driver.get("https://qms.prismesolutions.net/index.cfm?useraction=login")
