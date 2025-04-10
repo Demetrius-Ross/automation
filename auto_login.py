@@ -27,6 +27,8 @@ def decrypt_credentials(pin: str) -> dict:
 def login_with_selenium(username, password):
     options = EdgeOptions()
     options.add_argument("--new-window")
+    options.add_argument("--log-level=3")  # Suppresses info, warnings, and errors
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
     #options.add_argument(r"user-data-dir=C:\Users\p00802830\AppData\Local\Microsoft\Edge\User Data\AutomationProfile")
     service = EdgeService(EdgeChromiumDriverManager().install())
     driver = webdriver.Edge(service=service, options=options)
