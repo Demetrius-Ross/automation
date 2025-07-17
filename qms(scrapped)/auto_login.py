@@ -11,6 +11,34 @@ from selenium.webdriver.edge.options import Options as EdgeOptions
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 import time
 
+from selenium import webdriver
+from selenium.webdriver.edge.service import Service as EdgeService
+from selenium.webdriver.edge.options import Options
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+import os
+
+def create_driver():
+    options = Options()
+    options.add_argument("--log-level=3")
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    options.add_argument("--new-window")
+
+    try:
+        print("Trying to use online Edge driver...")
+        driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()), options=options)
+        print("✅ Online driver loaded.")
+        return driver
+    except Exception as e:
+        print("⚠️ Online driver failed (offline?). Trying local fallback...")
+        try:
+            local_driver_path = os.path.join(os.path.dirname(__file__), "msedgedriver.exe")
+            driver = webdriver.Edge(service=EdgeService(local_driver_path), options=options)
+            print("✅ Local fallback driver loaded.")
+            return driver
+        except Exception as e2:
+            print("❌ Failed to launch browser even with local driver.")
+            print(str(e2))
+            return None
 
 def get_key_from_pin(pin: str) -> bytes:
     hash = hashlib.sha256(pin.encode()).digest()
@@ -23,6 +51,15 @@ def decrypt_credentials(pin: str) -> dict:
         encryped = file.read()
     decrypted = fernet.decrypt(encryped)
     return json.loads(decrypted.decode())
+
+def login_with_selenium(username, password):
+    driver = create_driver()
+    if not driver:
+        print("Unable to continue. Browser could not be launched.")
+        return
+
+    driver.get("https://qms.prismedsolutions.net/index.cfm?fuseaction=login")
+    # ... rest of your logic ...
 
 def login_with_selenium(username, password):
     options = EdgeOptions()
